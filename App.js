@@ -12,12 +12,29 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const App = () => {
 
-
-
   const [take, settake] = useState([])
+  const [showData, setShowData] = useState([])
+
+  useEffect(() => {
+    const showingData = () => {
+      return take.map((item, index) => {
+        return (
+          <View key={index.toString()} style={{ margin: 2 }}>
+            <TouchableOpacity onPress={() => settake(take.filter(data => item !== data))}>
+              <Text>{item}</Text>
+            </TouchableOpacity >
+          </View>
+        )
+      })
+    }
+
+    take ? setShowData(showingData()) : null
+  }, [take])
+
+  console.log(take)
 
   const handleSubmit = async (value) => {
-    storeData(value)
+    await storeData(value)
     settake(await getData())
   }
 
@@ -31,7 +48,7 @@ const App = () => {
 
 
     try {
-      await AsyncStorage.setItem('123456', value)
+      await AsyncStorage.setItem('123456212', value)
       setAValue('')
     } catch (e) {
       console.warn(e)
@@ -41,7 +58,7 @@ const App = () => {
 
   const getData = async () => {
     try {
-      const returnValue = await AsyncStorage.getItem('123456')
+      const returnValue = await AsyncStorage.getItem('123456212')
       if (returnValue !== null) {
         return JSON.parse(returnValue)
       }
@@ -68,22 +85,8 @@ const App = () => {
         />
       </View>
       <Button title='submit' onPress={() => handleSubmit(value)} />
+      {showData}
 
-
-      <FlatList
-        data={take}
-        keyExtractor={(_, index) => index.toString()}
-        renderItem={({ item }) => {
-          return (
-            <View>
-              <TouchableOpacity onPress={() => settake(take.filter(data => item !== data))}>
-                <Text>{item}</Text>
-              </TouchableOpacity>
-
-            </View>
-          )
-        }}
-      />
     </View>
   )
 }
@@ -91,3 +94,8 @@ const App = () => {
 export default App
 
 const styles = StyleSheet.create({})
+
+
+
+
+
